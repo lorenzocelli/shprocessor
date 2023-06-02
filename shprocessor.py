@@ -42,6 +42,7 @@ def main():
     print(f"Input folder: {input_folder}")
     print(f"Template folder: {template_folder}")
     print(f"Output folder: {output_folder}")
+    print()
 
     if not glfw.init():
         print("Unable to initialize GLFW.")
@@ -66,18 +67,19 @@ def main():
         shader = None
 
         if filename.endswith(vert_extensions):
-            print("-> Vertex: " + filename)
+            print("- Vertex:   " + filename)
             shader = collection.add(filename, ShaderType.VERTEX)
 
         elif filename.endswith(frag_extensions):
-            print("-> Fragment: " + filename)
+            print("- Fragment: " + filename)
             shader = collection.add(filename, ShaderType.FRAGMENT)
 
         elif filename.endswith(geom_extensions):
-            print("-> Geometry: " + filename)
+            print("- Geometry: " + filename)
             shader = collection.add(filename, ShaderType.GEOMETRY)
 
         if shader and proc_folder:
+            # write the processed shaders code
             out_file = open(os.path.join(proc_folder, filename), 'w+')
             out_file.write(shader.source)
             out_file.close()
@@ -97,6 +99,9 @@ def main():
         out_file = open(os.path.join(output_folder, filename), 'w+')
         out_file.write(output)
         out_file.close()
+
+    print()
+    print("Done!")
 
     glfw.destroy_window(window)
     glfw.terminate()

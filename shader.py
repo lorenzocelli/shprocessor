@@ -1,6 +1,5 @@
 import json
 from enum import Enum
-from collections import abc
 from gldict import gl_type_dict
 from OpenGL.GL import *
 from jinja2 import Environment, FileSystemLoader
@@ -26,13 +25,13 @@ class ShaderType(Enum):
     def __str__(self):
 
         if self == self.VERTEX:
-            return "GL_VERTEX_SHADER"
+            return "Vertex"
 
         elif self == self.FRAGMENT:
-            return "GL_FRAGMENT_SHADER"
+            return "Fragment"
 
         elif self == self.GEOMETRY:
-            return "GL_GEOMETRY_SHADER"
+            return "Geometry"
 
 
 class NiceNameFormat(Enum):
@@ -92,8 +91,6 @@ class ShaderCollection:
 
         self.env = Environment(loader=FileSystemLoader(path), autoescape=False)
 
-
-
     def add(self, name: str, type: ShaderType):
         template = self.env.get_template(name)
         shader = Shader(name, type, template.render())
@@ -108,5 +105,3 @@ class ShaderCollection:
 
         self.programMap[name] = prog
         self.programs.append(prog)
-
-

@@ -7,7 +7,7 @@ namespace renderer
     {%- for shader in collection.shaders %}
 
     {%- set name = shader.name | replace(".", "_") %}
-    {%- set type = shader.type | lower | replace("gl_", "") %}
+    {%- set type = shader.type | lower ~ "_shader"  %}
 
 	class {{ name }} : public {{ type }}
 	{
