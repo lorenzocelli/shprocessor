@@ -2,9 +2,7 @@
 layout (location = 0) in vec3 pos;
 layout (location = 1) in vec3 col;
 
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+{% include 'mvp.com' %}
 
 out vec3 color;
 

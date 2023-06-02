@@ -2,9 +2,7 @@
 layout (lines_adjacency) in;
 layout (triangle_strip, max_vertices = 4) out;
 
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+{% include 'mvp.com' %}
 
 uniform float lineSize;
 

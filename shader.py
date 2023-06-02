@@ -1,12 +1,9 @@
 import json
 from enum import Enum
 from collections import abc
-
-from liquid import Environment
-from liquid import FileSystemLoader
 from gldict import gl_type_dict
-
 from OpenGL.GL import *
+from jinja2 import Environment, FileSystemLoader
 
 
 class ShaderType(Enum):
@@ -27,6 +24,7 @@ class ShaderType(Enum):
             return GL_GEOMETRY_SHADER
 
     def __str__(self):
+
         if self == self.VERTEX:
             return "GL_VERTEX_SHADER"
 
@@ -43,7 +41,7 @@ class NiceNameFormat(Enum):
     SNAKE_CASE = 1
 
 
-class Shader(abc.Mapping):
+class Shader:
 
     def __init__(self, name: str, shader_type: ShaderType, source: str):
         self.name = name
@@ -52,28 +50,12 @@ class Shader(abc.Mapping):
         self.source_repr = json.dumps(source)
         self.shader_id = self.gl_init()
 
-        self._keys = ["name", "type", "source", "source_repr"]
-
     def gl_init(self):
         shader_id = glCreateShader(self.type.gl_type())
         glShaderSource(shader_id, self.source)
         glCompileShader(shader_id)
 
         return shader_id
-
-    def __str__(self):
-        return f"({self.name}, {self.type})"
-
-    def __getitem__(self, k):
-        if k in self._keys:
-            return getattr(self, k)
-        raise KeyError(k)
-
-    def __iter__(self):
-        return iter(self._keys)
-
-    def __len__(self):
-        return len(self._keys)
 
 
 class Program:
@@ -100,20 +82,17 @@ class Program:
             print(name, size, gl_type_dict[kind])
 
 
-class ShaderCollection(abc.Mapping):
+class ShaderCollection:
 
     def __init__(self, path):
         self.shaderMap = {}
         self.programMap = {}
-
-        self.env = Environment(loader=FileSystemLoader(path))
-
         self.shaders = []
         self.programs = []
-        self._keys = [
-            "shaders",
-            "programs"
-        ]
+
+        self.env = Environment(loader=FileSystemLoader(path), autoescape=False)
+
+
 
     def add(self, name: str, type: ShaderType):
         template = self.env.get_template(name)
@@ -129,16 +108,5 @@ class ShaderCollection(abc.Mapping):
 
         self.programMap[name] = prog
         self.programs.append(prog)
-
-    def __getitem__(self, k):
-        if k in self._keys:
-            return getattr(self, k)
-        raise KeyError(k)
-
-    def __iter__(self):
-        return iter(self._keys)
-
-    def __len__(self):
-        return len(self._keys)
 
 

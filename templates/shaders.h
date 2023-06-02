@@ -4,25 +4,16 @@
 
 namespace renderer
 {
-    {%- for shader in collection.shaders -%}
-    {%- assign sh_name = shader.name | replace: ".", "_" -%}
-    {%- assign sh_type = shader.type | append: "" -%}
+    {%- for shader in collection.shaders %}
 
-    {%- assign shader_type = "vertex_shader" -%}
+    {%- set name = shader.name | replace(".", "_") %}
+    {%- set type = shader.type | lower | replace("gl_", "") %}
 
-    {%- if sh_type == "GL_FRAGMENT_SHADER" -%}
-    {%- assign shader_type = "fragment_shader" -%}
-    {%- endif %}
-
-    {%- if sh_type == "GL_GEOMETRY_SHADER" -%}
-    {%- assign shader_type = "geometry_shader" -%}
-    {%- endif %}
-
-	class {{ sh_name }} : public {{ shader_type }}
+	class {{ name }} : public {{ type }}
 	{
 	public:
-		{{ sh_name }}()
-			: {{ shader_type }}(
+		{{ name }}()
+			: {{ type }}(
 				std::string({{ shader.source_repr }})
 			)
 		{
