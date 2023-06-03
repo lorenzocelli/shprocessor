@@ -40,9 +40,9 @@ def main():
     template_folder = os.path.normpath(def_data[TEMPLATE_FOLDER_KEY])
     output_folder = os.path.normpath(def_data[OUTPUT_FOLDER_KEY])
     proc_folder = None
-    vert_extensions = tuple(def_data[VERT_EXTENSION_KEY])
-    frag_extensions = tuple(def_data[FRAG_EXTENSION_KEY])
-    geom_extensions = tuple(def_data[GEOM_EXTENSION_KEY])
+    vert_extensions = tuple(json.loads(def_data[VERT_EXTENSION_KEY]))
+    frag_extensions = tuple(json.loads(def_data[FRAG_EXTENSION_KEY]))
+    geom_extensions = tuple(json.loads(def_data[GEOM_EXTENSION_KEY]))
 
     if PROC_FOLDER_KEY in def_data:
         proc_folder = os.path.normpath(def_data[PROC_FOLDER_KEY])
