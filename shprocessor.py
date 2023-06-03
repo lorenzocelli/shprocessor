@@ -2,6 +2,7 @@ import sys
 import os
 import glfw
 import pathlib
+import configparser
 
 from shader import *
 
@@ -18,7 +19,7 @@ GEOM_EXTENSION_KEY = "Geometry extensions"
 def main():
 
     if len(sys.argv) < 2:
-        print("Please provide the path to the configuration JSON file as the first parameter.")
+        print("Please provide the path to the configuration .ini file as the first parameter.")
         return
 
     try:
@@ -31,18 +32,20 @@ def main():
     # to the configuration json file
     os.chdir(pathlib.Path(sys.argv[1]).parent.resolve())
 
-    data = json.load(f)
+    config = configparser.ConfigParser()
+    config.read_file(f)
+    def_data = config['DEFAULT']
 
-    input_folder = os.path.normpath(data[INPUT_FOLDER_KEY])
-    template_folder = os.path.normpath(data[TEMPLATE_FOLDER_KEY])
-    output_folder = os.path.normpath(data[OUTPUT_FOLDER_KEY])
+    input_folder = os.path.normpath(def_data[INPUT_FOLDER_KEY])
+    template_folder = os.path.normpath(def_data[TEMPLATE_FOLDER_KEY])
+    output_folder = os.path.normpath(def_data[OUTPUT_FOLDER_KEY])
     proc_folder = None
-    vert_extensions = tuple(data[VERT_EXTENSION_KEY])
-    frag_extensions = tuple(data[FRAG_EXTENSION_KEY])
-    geom_extensions = tuple(data[GEOM_EXTENSION_KEY])
+    vert_extensions = tuple(def_data[VERT_EXTENSION_KEY])
+    frag_extensions = tuple(def_data[FRAG_EXTENSION_KEY])
+    geom_extensions = tuple(def_data[GEOM_EXTENSION_KEY])
 
-    if PROC_FOLDER_KEY in data:
-        proc_folder = os.path.normpath(data[PROC_FOLDER_KEY])
+    if PROC_FOLDER_KEY in def_data:
+        proc_folder = os.path.normpath(def_data[PROC_FOLDER_KEY])
 
     print(f"Input folder: {input_folder}")
     print(f"Template folder: {template_folder}")
@@ -68,22 +71,24 @@ def main():
     for file in os.listdir(input_folder):
 
         filename = os.fsdecode(file)
-
-        shader = None
+        sh_type = None
 
         if filename.endswith(vert_extensions):
-            print("- Vertex:   " + filename)
-            shader = collection.add(filename, ShaderType.VERTEX)
+            sh_type = ShaderType.VERTEX
 
         elif filename.endswith(frag_extensions):
-            print("- Fragment: " + filename)
-            shader = collection.add(filename, ShaderType.FRAGMENT)
+            sh_type = ShaderType.FRAGMENT
 
         elif filename.endswith(geom_extensions):
-            print("- Geometry: " + filename)
-            shader = collection.add(filename, ShaderType.GEOMETRY)
+            sh_type = ShaderType.GEOMETRY
 
-        if shader and proc_folder:
+        if not sh_type:
+            continue
+
+        print(f"» {sh_type}: " + filename)
+        shader = collection.add(filename, sh_type)
+
+        if proc_folder:
             # write the processed shaders code
             out_file = open(os.path.join(proc_folder, filename), 'w+')
             out_file.write(shader.source)

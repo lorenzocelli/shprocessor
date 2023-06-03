@@ -1,9 +1,0 @@
-{
-  "Input folder": "./input",
-  "Template folder": "./templates",
-  "Output folder": "./output",
-  "Processed shaders folder": "./output/shaders",
-  "Vertex extensions": [".vert", ".vertex"],
-  "Fragment extensions": [".frag", ".fragment"],
-  "Geometry extensions": [".geom", ".geometry"]
-}
