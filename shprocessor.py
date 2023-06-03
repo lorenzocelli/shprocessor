@@ -1,6 +1,7 @@
 import sys
 import os
 import glfw
+import pathlib
 
 from shader import *
 
@@ -25,6 +26,10 @@ def main():
     except IOError as e:
         print(f"File '{sys.argv[1]}' not found ({e}).")
         return
+
+    # change the working directory so that every path is relative
+    # to the configuration json file
+    os.chdir(pathlib.Path(sys.argv[1]).parent.resolve())
 
     data = json.load(f)
 
