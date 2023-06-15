@@ -164,6 +164,7 @@ def main():
     watch = sys.argv[1].lower() == "-w"
 
     cf_path = sys.argv[1] if not watch else sys.argv[2]
+    cf_path = os.path.abspath(cf_path)
 
     cf = run(cf_path, 2)
 
