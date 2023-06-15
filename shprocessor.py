@@ -37,7 +37,7 @@ class Config:
         self.frag_extensions = tuple(json.loads(def_data[FRAG_EXTENSION_KEY]))
         self.geom_extensions = tuple(json.loads(def_data[GEOM_EXTENSION_KEY]))
 
-        if PROC_FOLDER_KEY in def_data:
+        if PROC_FOLDER_KEY in def_data and def_data[PROC_FOLDER_KEY]:
             self.proc_folder = os.path.normpath(def_data[PROC_FOLDER_KEY])
 
 
